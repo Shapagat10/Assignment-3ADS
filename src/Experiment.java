@@ -1,24 +1,37 @@
 import java.util.Arrays;
 
 public class Experiment {
-    Sorter sorter = new Sorter();
-    Searcher searcher = new Searcher();
-
-    public long measureSortTime(int[] arr, String type) {
-        int[] copy = Arrays.copyOf(arr, arr.length);
-        long start = System.nanoTime();
-        if (type.equals("basic")) sorter.basicSort(copy);
-        else sorter.advancedSort(copy);
-        return System.nanoTime() - start;
-    }
+    private Sorter sorter = new Sorter();
+    private Searcher searcher = new Searcher();
 
     public void runAllExperiments() {
         int[] sizes = {10, 100, 1000};
+
         for (int size : sizes) {
-            int[] arr = sorter.generateRandomArray(size);
-            System.out.println("Current Size: " + size);
-            System.out.println("Bubble Sort: " + measureSortTime(arr, "basic") + " ns");
-            System.out.println("Selection Sort: " + measureSortTime(arr, "advanced") + " ns\n");
+            System.out.println("=== Experiment for Size: " + size + " ===");
+
+            int[] originalArray = sorter.generateRandomArray(size);
+
+            int[] bubbleArray = Arrays.copyOf(originalArray, originalArray.length);
+            long startBubble = System.nanoTime();
+            sorter.basicSort(bubbleArray);
+            long endBubble = System.nanoTime();
+            long timeBubble = endBubble - startBubble;
+            int[] quickArray = Arrays.copyOf(originalArray, originalArray.length);
+            long startQuick = System.nanoTime();
+            sorter.advancedSort(quickArray);
+            long endQuick = System.nanoTime();
+            long timeQuick = endQuick - startQuick;
+
+            long startSearch = System.nanoTime();
+            searcher.search(originalArray, -1);
+            long endSearch = System.nanoTime();
+            long timeSearch = endSearch - startSearch;
+
+            System.out.println("Bubble Sort:    " + timeBubble + " ns");
+            System.out.println("Quick Sort:     " + timeQuick + " ns");
+            System.out.println("Linear Search:  " + timeSearch + " ns");
+            System.out.println();
         }
     }
 }
